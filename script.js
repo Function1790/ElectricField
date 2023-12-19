@@ -22,6 +22,13 @@ class Vector {
     copy() {
         return new Vector(this.x, this.y)
     }
+    normalized() {
+        var size = Math.sqrt(this.x ** 2 + this.y ** 2)
+        return new Vector(this.x / size, this.y / size)
+    }
+    get sizeS() {
+        return this.x ** 2 + this.y ** 2
+    }
 }
 
 function CM(value) {
@@ -56,8 +63,14 @@ class Point {
         ctx.closePath()
         ctx.beginPath()
         ctx.moveTo(this.x, this.y)
+        ctx.lineWidth = Math.sqrt(this.value.sizeS) / 20
+        if (ctx.lineWidth > 5) {
+            ctx.lineWidth = 5
+        }
         ctx.strokeStyle = this.color
-        ctx.lineTo(this.x + this.value.x, this.y + this.value.y)
+        var v = this.value.normalized()
+        v.mult(10)
+        ctx.lineTo(this.x + v.x, this.y + v.y)
         ctx.stroke()
         ctx.closePath()
     }
@@ -88,7 +101,7 @@ class Charge {
         ctx.closePath()
     }
     move() {
-        if(this.isMove == false){
+        if (this.isMove == false) {
             return
         }
         var Force = new Vector(0, 0)
@@ -112,11 +125,12 @@ class Charge {
 
 const Points = []
 const Electrics = [
-    new Charge(0, 800, -2, false),
-    new Charge(400, 400, -2, false),
-    new Charge(520, 450, +1),
-    new Charge(620, 300, +1),
+    new Charge(400, 400, -5, false),
 ]
+
+for (var i = 0; i < 2; i++) {
+    Electrics.push(new Charge(Math.random() * 800, Math.random() * 800, +5, true),)
+}
 
 for (var i = 0; i < 40; i++) {
     Points.push([])
